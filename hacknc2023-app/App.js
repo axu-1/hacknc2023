@@ -1,6 +1,6 @@
+import React, { useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, TextInput, View } from 'react-native';
-//import { MyStyles } from './MyStyles.js';
 
 export default function App() {
 
@@ -9,23 +9,23 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <Text /*style={MyStyles.whiteText}*/>Welcome to the password cracking game!</Text>
+      <Text style ={{color: '#fff', marginBottom: 10}} >Welcome to the password cracking game!</Text>
       <StatusBar style="auto" />
-      {/* <TextInput
-        style={MyStyles.TextInput}
+      <TextInput
+        style={TextBoxStyles.input}
         placeholder="Username"
         value={username}
         onChangeText={text => setUsername(text)}
       />
       <TextInput
-        style={MyStyles.TextInput}
+        style={TextBoxStyles.input}
         placeholder="Password"
         secureTextEntry
         value={password}
         onChangeText={text => setPassword(text)}
-      /> */}
+      />
     </View>
-);
+  );
 }
 
 const styles = StyleSheet.create({
@@ -34,5 +34,33 @@ const styles = StyleSheet.create({
     backgroundColor: '#25292e',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+});
+
+const TextBoxStyles = StyleSheet.create({
+  container: {
+    backgroundColor: '#fff',
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  input: {
+    backgroundColor: '#fff',
+    width: 300,
+    height: 40,
+    borderColor: 'gray',
+    borderWidth: 1,
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    marginBottom: 10,
+    // Highlight effect when focused
+    shadowColor: 'blue', // Change to your desired highlight color
+    shadowOpacity: 0.5,
+    shadowRadius: 5,
+    shadowOffset: {
+      width: 0,
+      height: 0,
+    },
   },
 });
