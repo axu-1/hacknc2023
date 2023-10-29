@@ -10,10 +10,12 @@
   },
   "dependencies": {
     "@expo/webpack-config": "^19.0.0",
+    "@react-native-community/checkbox": "^0.5.16",
     "@react-native-picker/picker": "2.4.10",
     "@react-navigation/native": "^6.1.9",
     "@react-navigation/native-stack": "^6.9.16",
     "expo": "~49.0.15",
+    "expo-radio-button": "^1.0.8",
     "expo-status-bar": "~1.6.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",

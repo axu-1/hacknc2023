@@ -7,6 +7,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Picker } from '@react-native-picker/picker';
 import { useRoute } from '@react-navigation/native';
 import { TouchableOpacity } from 'react-native';
+import RadioButtonGroup, { RadioButtonItem } from "expo-radio-button";
 
 const Stack = createNativeStackNavigator();
 
@@ -91,6 +92,61 @@ function HashScreen(){
           <Text style={HashScreenStyles.headerText}> Uh more stuff</Text>
         </View>
         <Text style={HashScreenStyles.passwordText}>Password: {'\n'+ password} </Text>
+      </View>
+      <View style={HashScreenStyles.bottomContainer}>
+        <TouchableOpacity 
+        style={{backgroundColor: 'green', borderRadius: 4, }}
+        onPress={() => navigation.navigate('Hash', { username, password })}
+        >
+          <Text style={{color: 'white', padding: 10, fontWeight: 500 }}>What do hackers do with this hash?</Text>
+        </TouchableOpacity> 
+      </View>
+    </View>
+  );
+}
+
+function ListScreen(){
+
+  const [currentList, setCurrentList] = useState(null);
+  const listOptions = [
+    { label: 'Only alphabet letters', value: 'alpha' },
+    { label: 'Capitalized word followed by digits', value: 'wordnum' },
+    { label: 'Mixed alphabet and numbers', value: 'alphanum' },
+  ]
+
+  return (
+    <View style={ListScreenStyles.container}>
+      <View style={ListScreenStyles.leftContainer}>
+        <Text style={ListScreenStyles.title}>Select an option:</Text>
+        <RadioButtonGroup
+          selected = { currentList }
+          onSelected = { (value) => setCurrentList(value)}
+        > 
+          { radioOptions.map((option) => (
+          < RadioButton
+              label={option.label}
+              value={option.value}
+          />
+          )) }
+        </RadioButtonGroup>
+      </View>
+      <View style={ListScreenStyles.rightContainer}>
+        {selectedOption ? (
+          <View>
+            <Text style={ListScreenStyles.title}>Selected Option:</Text>
+            <Text style={ListScreenStyles.description}>
+              {/* Display content based on the selected option */}
+              {selectedOption === 'option1'
+                ? 'Your password is part of many different rainbow tables! Lowercase alphabet, uppercase alphabet, and mixed alphabet, from 1-8 letters. A rainbow table is a list that contains every single possible combination of a given set of characters, and can be used to check for common password formats. If any of the table entry hashes matches your password hash, the hacker knows that it is most likely your password.'
+                : selectedOption === 'option2'
+                ? 'Your password is part of a 362GB rainbow table! Uppercase letter followed by 5-7 letters followed by 1-5 numbers. A rainbow table is a list that contains every single possible combination of a given set of characters, and can be used to check for common password formats. If any of the table entry hashes matches your password hash, the hacker knows that it is most likely your password.'
+                : 'Your password is part of a couple different rainbow tables! Mixed alphanumeric tables that use upper and lower case characters and all digits. A rainbow table is a list that contains every single possible combination of a given set of characters, and can be used to check for common password formats. If any of the table entry hashes matches your password hash, the hacker knows that it is most likely your password.'}
+            </Text>
+          </View>
+        ) : (
+          <Text style={ListScreenStyles.placeholder}>Select an option to view details.</Text>
+        )}
+        <Text>Check out https://freerainbowtables.com/ for a list of the most common password formats - don't be one of them!</Text>
       </View>
     </View>
   );
@@ -180,6 +236,12 @@ const HashScreenStyles = StyleSheet.create({
     backgroundColor: 'white',
   },
 
+  bottomContainer: {
+    backgroundColor: 'green',
+    borderRadius: 8,
+    flex: .5,
+  },
+
   header: {
     flex: 1,
     alignSelf: 'stretch',
@@ -203,4 +265,30 @@ const HashScreenStyles = StyleSheet.create({
   picker: {
     flex: 8,
   }
+});
+
+const ListScreenStyles = StyleSheet.create({
+  container: {
+    flex: 1,
+    flexDirection: 'row',
+  },
+  leftContainer: {
+    flex: 1,
+    padding: 20,
+  },
+  rightContainer: {
+    flex: 2,
+    padding: 20,
+  },
+  title: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  description: {
+    fontSize: 16,
+  },
+  placeholder: {
+    fontSize: 16,
+    fontStyle: 'italic',
+  },
 });
