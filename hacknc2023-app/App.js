@@ -87,6 +87,9 @@ function HashScreen(){
         </Picker>
       </View>
       <View style={HashScreenStyles.rightContainer}>
+      <View style={HashScreenStyles.header}>
+          <Text style={HashScreenStyles.headerText}> Uh more stuff</Text>
+        </View>
         <Text style={HashScreenStyles.passwordText}>Password: {'\n'+ password} </Text>
       </View>
     </View>
@@ -194,7 +197,8 @@ const HashScreenStyles = StyleSheet.create({
   },
   passwordText: {
     fontSize: 20,
-    textAlign: 'center'
+    textAlign: 'center',
+    flex: 8,
   },
   picker: {
     flex: 8,
