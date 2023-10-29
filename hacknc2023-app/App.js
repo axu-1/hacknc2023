@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { Button, StyleSheet, Text, TextInput, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
@@ -7,7 +7,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Picker } from '@react-native-picker/picker';
 import { useRoute } from '@react-navigation/native';
 import { TouchableOpacity } from 'react-native';
-import RadioButtonGroup, { RadioButtonItem } from "expo-radio-button";
+import RadioGroup from 'react-native-radio-buttons-group';
 
 const Stack = createNativeStackNavigator();
 
@@ -18,6 +18,7 @@ export default function App() {
       <Stack.Navigator initialRouteName="Input">
         <Stack.Screen name="Input" component={InputScreen}/>
         <Stack.Screen name="Hash" component={HashScreen}/>
+        <Stack.Screen name="List" component={ListScreen}/>
       </Stack.Navigator>
     </NavigationContainer>
   );
@@ -64,15 +65,15 @@ function InputScreen({ navigation }) {
   );
 }
 
-function HashScreen(){
+function HashScreen( {navigation} ){
 
   const route = useRoute();
   const { username, password } = route.params;
   const [selectedHashType, setHashType] = useState();
 
-
   return (
     <View style={HashScreenStyles.container}>
+      <View style={HashScreenStyles.topContainer}>
       <View style={HashScreenStyles.leftContainer}>
         <View style={HashScreenStyles.header}>
           <Text style={HashScreenStyles.headerText}> Uh stuff</Text>
@@ -83,8 +84,9 @@ function HashScreen(){
           onValueChange={(itemValue, itemIndex) =>
             setHashType(itemValue)
           }>
-          <Picker.Item label="Hash1" value="hash1" />
-          <Picker.Item label="Hash2" value="hash2" />
+          <Picker.Item label="MD5" value="md5" />
+          <Picker.Item label="SHA1" value="SHA1" />
+          \<Picker.Item label="SHA1" value="SHA1" />
         </Picker>
       </View>
       <View style={HashScreenStyles.rightContainer}>
@@ -93,54 +95,67 @@ function HashScreen(){
         </View>
         <Text style={HashScreenStyles.passwordText}>Password: {'\n'+ password} </Text>
       </View>
-      <View style={HashScreenStyles.bottomContainer}>
-        <TouchableOpacity 
-        style={{backgroundColor: 'green', borderRadius: 4, }}
-        onPress={() => navigation.navigate('Hash', { username, password })}
-        >
-          <Text style={{color: 'white', padding: 10, fontWeight: 500 }}>What do hackers do with this hash?</Text>
-        </TouchableOpacity> 
       </View>
+      <View style={HashScreenStyles.bottomContainer}>
+          <TouchableOpacity 
+          style={{backgroundColor: 'green', borderRadius: 4, }}
+          onPress={() => navigation.navigate('List', { username, password })}
+          >
+            <Text style={{color: 'white', padding: 10, fontWeight: 500 }}>What do hackers do with this hash?</Text>
+          </TouchableOpacity> 
+        </View>
     </View>
   );
 }
 
 function ListScreen(){
 
+  const route = useRoute();
+  const { username, password } = route.params;
+
   const [currentList, setCurrentList] = useState(null);
-  const listOptions = [
-    { label: 'Only alphabet letters', value: 'alpha' },
-    { label: 'Capitalized word followed by digits', value: 'wordnum' },
-    { label: 'Mixed alphabet and numbers', value: 'alphanum' },
-  ]
+  const listOptions = useMemo(() =>  ([
+    {
+      id: '1',
+      label: 'Only alphabet letters',
+      value: 'alpha',
+    },
+
+    {
+      id: '2',
+      label: 'Capitalized word followed by digits',
+      value: 'wordnum'
+    },
+
+    {
+      id: '3',
+      label: 'Mixed alphabet and numbers',
+      value: 'alphanum'
+    }
+
+  ]), []);
 
   return (
     <View style={ListScreenStyles.container}>
       <View style={ListScreenStyles.leftContainer}>
-        <Text style={ListScreenStyles.title}>Select an option:</Text>
-        <RadioButtonGroup
-          selected = { currentList }
-          onSelected = { (value) => setCurrentList(value)}
-        > 
-          { radioOptions.map((option) => (
-          < RadioButton
-              label={option.label}
-              value={option.value}
+        <Text style={ListScreenStyles.title}>What format is your password, if any?</Text>
+          < RadioGroup
+              style = {ListScreenStyles.radioList}
+              radioButtons={listOptions}
+              onPress={setCurrentList}
+              selectedId={currentList}
           />
-          )) }
-        </RadioButtonGroup>
       </View>
       <View style={ListScreenStyles.rightContainer}>
-        {selectedOption ? (
+        {currentList ? (
           <View>
             <Text style={ListScreenStyles.title}>Selected Option:</Text>
             <Text style={ListScreenStyles.description}>
-              {/* Display content based on the selected option */}
-              {selectedOption === 'option1'
+              {currentList === 'alpha'
                 ? 'Your password is part of many different rainbow tables! Lowercase alphabet, uppercase alphabet, and mixed alphabet, from 1-8 letters. A rainbow table is a list that contains every single possible combination of a given set of characters, and can be used to check for common password formats. If any of the table entry hashes matches your password hash, the hacker knows that it is most likely your password.'
-                : selectedOption === 'option2'
+                : currentList === 'wordnum'
                 ? 'Your password is part of a 362GB rainbow table! Uppercase letter followed by 5-7 letters followed by 1-5 numbers. A rainbow table is a list that contains every single possible combination of a given set of characters, and can be used to check for common password formats. If any of the table entry hashes matches your password hash, the hacker knows that it is most likely your password.'
-                : 'Your password is part of a couple different rainbow tables! Mixed alphanumeric tables that use upper and lower case characters and all digits. A rainbow table is a list that contains every single possible combination of a given set of characters, and can be used to check for common password formats. If any of the table entry hashes matches your password hash, the hacker knows that it is most likely your password.'}
+                :'Your password is part of a couple different rainbow tables! Mixed alphanumeric tables that use upper and lower case characters and all digits. A rainbow table is a list that contains every single possible combination of a given set of characters, and can be used to check for common password formats. If any of the table entry hashes matches your password hash, the hacker knows that it is most likely your password.'}
             </Text>
           </View>
         ) : (
@@ -214,6 +229,11 @@ const InputScreenStyles = StyleSheet.create({
 const HashScreenStyles = StyleSheet.create({
   container: {
     flex: 1,
+    flexDirection: 'column',
+    backgroundColor: '#25292e',
+  },
+  topContainer: {
+    flex: 1,
     flexDirection: 'row',
     backgroundColor: '#25292e',
   },
@@ -237,9 +257,13 @@ const HashScreenStyles = StyleSheet.create({
   },
 
   bottomContainer: {
+    margin: 24,
+    marginTop: 12,
     backgroundColor: 'green',
     borderRadius: 8,
-    flex: .5,
+    height: '20%',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 
   header: {
@@ -271,18 +295,26 @@ const ListScreenStyles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: 'row',
+    backgroundColor: '#25292e',
   },
   leftContainer: {
     flex: 1,
     padding: 20,
+    borderRadius: 8,
+    backgroundColor: 'white',
+    margin: 20,
   },
   rightContainer: {
     flex: 2,
     padding: 20,
+    borderRadius: 8,
+    backgroundColor: 'white',
+    margin: 20,
   },
   title: {
     fontSize: 18,
     fontWeight: 'bold',
+    justifyContent: 'center',
   },
   description: {
     fontSize: 16,
@@ -291,4 +323,9 @@ const ListScreenStyles = StyleSheet.create({
     fontSize: 16,
     fontStyle: 'italic',
   },
+
+  radioList: {
+    alignItems: 'center',
+    justifyContent: 'left',
+  }
 });
